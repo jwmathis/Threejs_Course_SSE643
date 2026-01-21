@@ -1,20 +1,48 @@
-# Interactive 3D Museum Walkthrough
-A high-fidelity, first person 3D gallery experience built with Three.js. This project features a multi-room layout, dynamic lighting, custom physics-based movement, and real-time telemetry.
-
-## Quick Start
+<a name="top-of-page"></a>
+# Quick Start
 
 ### Prerequisites
 * A modern web browser (Chrome, Firefox, or Edge recommended).
 * A local development server (this project uses ES modules and loads external .gltf models).
 
 ### Installation & Running
-  1. CLone or Download this repository to your local machine.
+This project is part of a monorepo. To run it locally:
+  1. Clone or Download this repository to your local machine.
   2. Open a terminal in the project folder.
-  3. Start a local server:
-    * If you have Node.js installed, run npx serve .
-    * If you use VS Code, right-click index.html and select "Open with Live Server"
-    * If you have Python installed, run: python -m http.server
-  4. Navigate to http://localhost:5000 (or the port provided by your server).
+  3. **Install Dependencies** (from the root folder):
+   ```bash
+   npm install
+  ```
+  4. **Start a development server**: from the root folder, run:
+
+    npm run dev -w [folder-name]
+
+# Modules
+[Module 1: Basic Geometry Scenes](#module1)
+
+[Module 2: Lighting and Walking Controls](#module2)
+
+# Module 1 <a name="module1"></a>
+Folder ./Module1 Basic intorduction to Three.js scenes, cameras, renders.
+
+# Module 2 <a name="module2"></a>
+Folder: ./Module2
+
+Subfolders:
+1) ./Module2/Lighting_Scene
+2) .Module2/Walking_Controls
+
+The following information will proide instructions on how to run .Module2/Walking_Controls
+## How to Run:
+1. Ensure you have `npm install` in the root.
+2. Execute the command
+```
+  npm run dev -w module2-walking-controls
+```
+3. Open the local server in your browser.
+
+## Description
+A high-fidelity, first person 3D gallery experience built with Three.js. This project features a multi-room layout, dynamic lighting, custom physics-based movement, and real-time telemetry.
 
 ### Controls
   The movement system is designed to mimic a standard First-Person Shooter (FPS) "Walkthrough" mode.
@@ -65,4 +93,4 @@ A high-fidelity, first person 3D gallery experience built with Three.js. This pr
 
   *  Camera "Stuck": If the camera cannot move, check the Telemetry HUD. You may be colliding with a wall's collision boundary. Simply turn and walk in the opposite direction.
 
-    
+  [Back to Top](#top-of-page)
