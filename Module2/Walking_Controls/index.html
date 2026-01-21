@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js Local Setup</title>
+    <link rel="stylesheet" href="style.css">
+<body>
+<div id="camera-ui" style="
+     position: fixed;
+     top: 20px;
+     left: 20px;
+     padding: 15px;
+     background: rgba(0, 0, 0, 0.7);
+     color: #00ff00;
+     font-family: 'Courier New', Courier, monospace;
+     border-radius: 8px;
+     pointer-events: none;
+     font-size: 14px;
+     border: 1px solid #444;
+     z-index: 100;">
+    <strong>CAMERA TELEMETRY</strong><br>
+    <span id="pos-display">Pos: X: 0, Y: 0, Z: 0</span><br>
+    <span id="rot-display">Rot: X: 0, Y: 0, Z: 0</span>
+</div>
+    <canvas id="bg"></canvas>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

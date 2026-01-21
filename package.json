@@ -1,0 +1,8 @@
+{
+  "name": "threejs_course_sse643",
+  "private": true,
+  "workspaces": [
+    "Module1",
+    "Module2/*"
+  ]
+}

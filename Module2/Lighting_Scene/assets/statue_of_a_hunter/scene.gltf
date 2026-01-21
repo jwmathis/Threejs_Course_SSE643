@@ -1,0 +1,240 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 52858,
+      "max": [
+        22.305400848388672,
+        -1.1102999448776245,
+        8.398599624633789
+      ],
+      "min": [
+        -16.989299774169922,
+        -37.650699615478516,
+        -9.30459976196289
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 634296,
+      "componentType": 5126,
+      "count": 52858,
+      "max": [
+        0.9999954700469971,
+        0.9998243451118469,
+        0.9999988079071045
+      ],
+      "min": [
+        -0.9999935626983643,
+        -0.9999939203262329,
+        -0.9999873638153076
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 52858,
+      "max": [
+        0.9999985098838806,
+        0.9999915957450867,
+        0.9999423623085022,
+        1.0
+      ],
+      "min": [
+        -0.9999979734420776,
+        -0.9999627470970154,
+        -0.999995768070221,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 52858,
+      "max": [
+        0.9990000128746033,
+        0.9958000183105469
+      ],
+      "min": [
+        0.0010999999940395355,
+        0.0010000000474974513
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 286542,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "3dhdscan (https://sketchfab.com/3dhdscan)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/statue-of-a-hunter-f777e0a58bd84e7f945a9dd688eab27a",
+      "title": "Statue of a hunter"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 1146168,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 422864,
+      "byteOffset": 1146168,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1268592,
+      "byteOffset": 1569032,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 845728,
+      "byteOffset": 2837624,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 3683352,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/socha_100k_baseColor.jpeg"
+    },
+    {
+      "uri": "textures/socha_100k_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/socha_100k_normal.jpeg"
+    }
+  ],
+  "materials": [
+    {
+      "name": "socha_100k",
+      "normalTexture": {
+        "index": 2,
+        "scale": 0.4529344512195122
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0,
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Object_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        0.08672367036342621,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.08672367036342621,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.08672367036342621,
+        0.0,
+        0.0,
+        -19.83348083496094,
+        18.92747116088867,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "socha_100kuw.obj.cleaner.materialmerger.gles"
+    },
+    {
+      "mesh": 0,
+      "name": "Object_2"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 33071,
+      "wrapT": 33071
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ]
+}
