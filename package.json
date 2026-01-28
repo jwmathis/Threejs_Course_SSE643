@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": [
     "Module1",
-    "Module2/*"
+    "Module2/*",
+    "Module3"
   ]
 }
