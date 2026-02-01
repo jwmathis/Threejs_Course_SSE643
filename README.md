@@ -22,15 +22,17 @@ This project is part of a monorepo. To run it locally:
 
 [Module 2: Lighting and Walking Controls](#module2)
 
+[Module 3: Material and Texture Manipulation](#module3)
+
 # Module 1 <a name="module1"></a>
-Folder ./Module1 Basic intorduction to Three.js scenes, cameras, renders.
+Folder: ./Module1 Basic intorduction to Three.js scenes, cameras, renders.
 
 # Module 2 <a name="module2"></a>
 Folder: ./Module2
 
 Subfolders:
 1) ./Module2/Lighting_Scene
-2) .Module2/Walking_Controls
+2) ./Module2/Walking_Controls
 
 The following information will proide instructions on how to run .Module2/Walking_Controls
 ## How to Run:
@@ -92,5 +94,28 @@ A high-fidelity, first person 3D gallery experience built with Three.js. This pr
 ### Troubleshooting
 
   *  Camera "Stuck": If the camera cannot move, check the Telemetry HUD. You may be colliding with a wall's collision boundary. Simply turn and walk in the opposite direction.
+
+
+# Module 3 <a name="module3"></a>
+Folder: ./Module3
+The following information will proide instructions on how to run ./Module3
+
+## How to Run:
+1. Ensure you have `npm install` in the root.
+2. Execute the command
+```
+  npm run dev -w module3
+```
+3. Open the local server in your browser.
+
+## Description
+This project features shapes with various materials/textures to explore how lighting materials and lighting affect appearance.
+
+### Controls
+  | Key | Action |
+  | :--- | :--- |
+  | 'Space' | Turn on Axes and Grid helpers and the floor |
+  | 'o' | Activate sphere orbiting |
+  | 'm' | Alternate between the materials on the hero shape |
 
   [Back to Top](#top-of-page)
