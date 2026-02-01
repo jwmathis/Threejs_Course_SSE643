@@ -75,7 +75,7 @@ floor.position.y = 0;
 scene.add(floor);
 
 const sphere_geometry = new THREE.SphereGeometry(1, 32, 32);
-const cube_geometry = new THREE.BoxGeometry(1, 1, 1);
+const cube_geometry = new THREE.BoxGeometry(3, 3, 3);
 
 // ---TASK 1: Use Various Built-In Materials ---
 // 1. MeshBasicMaterial (unlit)
@@ -105,6 +105,10 @@ const mat_standard = new THREE.MeshStandardMaterial({
 
 const mat_shader = new THREE.ShaderMaterial({
     uniforms: { time: { value: 0 } },
+    transparent: true,
+    blending: THREE.AdditiveBlending, // This makes it look like it's glowing!
+    depthWrite: false, // Prevents the hologram from "cutting" other objects
+    side: THREE.DoubleSide,
     vertexShader: `
         varying vec2 vUv;
         void main() {
@@ -115,25 +119,23 @@ const mat_shader = new THREE.ShaderMaterial({
         uniform float time;
         varying vec2 vUv;
         void main() {
-            float pulse = abs(sin(time * 2.0));
-            gl_FragColor = vec4(0.0, pulse, pulse, 1.0); // Pulsing Cyan/Green
+            // 1. Create horizontal scanlines using sine wave on the Y axis
+            float scanline = sin(vUv.y * 100.0 + time * 10.0) * 0.1;
+            
+            // 2. Create a pulsing glow effect
+            float pulse = 0.6 + 0.4 * sin(time * 2.0);
+            
+            // 3. Add a random flicker
+            float flicker = clamp(sin(time * 50.0), 0.8, 1.0);
+            
+            // Define the base hologram color (Cyan)
+            vec3 color = vec3(0.0, 1.0, 1.0);
+            
+            // 4. Calculate opacity: Base alpha + scanlines
+            float alpha = (0.3 + scanline) * pulse * flicker;
+            
+            gl_FragColor = vec4(color, alpha);
         }`
-});
-
-const textureLoader = new THREE.TextureLoader();
-const brickColor = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/brick_diffuse.jpg');
-const brickNormal = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/brick_bump.jpg');
-
-// EXPERIMENT: Texture Repetition and Offset (Task 2 requirements)
-brickColor.wrapS = THREE.RepeatWrapping; // Allows horizontal tiling
-brickColor.wrapT = THREE.RepeatWrapping; // Allows vertical tiling
-brickColor.repeat.set(2, 2);             // Tiles the image 2x2 across the surface
-
-const mat_advanced = new THREE.MeshPhongMaterial({
-    map: brickColor,
-    normalMap: brickNormal,
-    shininess: 150,
-    specular: 0x888888
 });
 
 const sphere1 = new THREE.Mesh(sphere_geometry, mat_basic);
@@ -152,10 +154,42 @@ shapes.forEach((s, index) => {
     scene.add(s);
 });
 
-const cube = new THREE.Mesh(cube_geometry, mat_advanced);
-cube.position.set(0, 2.5, 4);
-cube.scale.set(5, 5, 5);
-//scene.add(cube);
+// ---TASK 2: Use Textures ---
+const textureLoader = new THREE.TextureLoader();
+const brickColor = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/brick_diffuse.jpg');
+const brickNormal = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/brick_bump.jpg');
+
+// EXPERIMENT: Texture Repetition and Offset (Task 2 requirements)
+brickColor.wrapS = THREE.RepeatWrapping; // Allows horizontal tiling
+brickColor.repeat.set(1, 1);             // Tiles the image 2x2 across the surface
+brickNormal.wrapS = brickNormal.WrapT = THREE.RepeatWrapping;
+brickNormal.repeat.set(1, 1);
+
+// Cube 1: No Normal Map
+const mat_flat = new THREE.MeshPhongMaterial({ map: brickColor });
+const cubeFlat = new THREE.Mesh(cube_geometry, mat_flat);
+cubeFlat.position.set(-4, 2, 10); // To the left
+scene.add(cubeFlat);
+
+// Cube 2: With Normal Map
+const mat_advanced = new THREE.MeshPhongMaterial({
+    map: brickColor,
+    normalMap: brickNormal,
+    shininess: 150,
+    specular: 0x888888
+});
+
+const cubeDetailed = new THREE.Mesh(cube_geometry, mat_advanced);
+cubeDetailed.position.set(4, 2, 10); // To the right
+scene.add(cubeDetailed);
+
+// Add a label/pedestal for them
+const comparisonPedestal = new THREE.Mesh(
+    new THREE.BoxGeometry(12, 0.2, 2),
+    new THREE.MeshStandardMaterial({ color: 0x333333 })
+);
+comparisonPedestal.position.set(0, 0.1, 10);
+scene.add(comparisonPedestal);
 
 /**
  * --- TASK 3: Interactive Material Switching ---
@@ -172,14 +206,32 @@ const heroMesh =  new THREE.Mesh(heroGeometry, mat_standard);
 heroMesh.position.set(0, 5, -5);
 scene.add(heroMesh);
 
-const materialPalette = [mat_basic, mat_normal, mat_lambert, mat_phong, mat_standard, mat_advanced, mat_shader];
+const materialPalette = [mat_basic, mat_shader, mat_normal, mat_lambert, mat_phong, mat_standard, mat_advanced];
 let paletteIndex = 0;
-
+let isOrbiting = false;
 window.addEventListener('keydown', (event) => {
     if (event.key === 'm' || event.key === 'M') {
         paletteIndex = (paletteIndex + 1) % materialPalette.length;
-        heroMesh.material = materialPalette[paletteIndex];
+        const selectedMaterial= materialPalette[paletteIndex];
+        heroMesh.material = selectedMaterial;
         console.log(`Hero material changed to: ${heroMesh.material.type}`);
+
+        // --- DYNAMIC ENVIRONMENT SWITCH ---
+        if (selectedMaterial === mat_shader) {
+            // Dark Mode: Hologram focus
+            scene.background = new THREE.Color(0x050505); // Near black
+            ambientLight.intensity = 0.1; // Dim the room
+            directionalLight.intensity = 0.5; // Soften shadows
+            floor.material.color.set(0x111111); // Darken the floor
+        } else {
+            // Light Mode: Gallery focus
+            scene.background = new THREE.Color(0xfff8e1);
+            ambientLight.intensity = 0.6;
+            directionalLight.intensity = 2.0;
+            floor.material.color.set(0xeeeeee);
+        }
+
+        console.log(`Mode Switched: ${selectedMaterial.type}`);
     }
 
     if (event.code === 'Space') {
@@ -187,18 +239,16 @@ window.addEventListener('keydown', (event) => {
         axesHelper.visible = !axesHelper.visible;
         floor.visible = !floor.visible;
     }
+
+    if (event.key === 'o' || event.key === 'O') {
+        isOrbiting = !isOrbiting;
+        console.log("Orbiting Mode:", isOrbiting ? "Enabled" : "Disabled");
+    }
 });
 /**
  * ---- 7. ANIMATION LOOP ----
  * Continuously rendering the scene and updating controls
  ***/
-let isOrbiting = false;
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'o' || e.key === 'O') {
-        isOrbiting = !isOrbiting;
-        console.log("Orbiting Mode:", isOrbiting ? "Enabled" : "Disabled");
-    }
-});
 
 const clock = new THREE.Clock();
 
@@ -206,6 +256,22 @@ function animate() {
     requestAnimationFrame(animate);
     const elapsed = clock.getElapsedTime();
     mat_shader.uniforms.time.value = elapsed;
+
+    // --- HOLOGRAM GLITCH EFFECT ---
+    if (heroMesh.material === mat_shader) {
+        // Randomly offset the position very slightly to simulate a digital glitch
+        if (Math.random() > 0.98) {
+            heroMesh.position.x = (Math.random() - 0.5) * 0.5;
+            heroMesh.position.z = -5 + (Math.random() - 0.5) * 0.5;
+        } else {
+            heroMesh.position.x = 0;
+            heroMesh.position.z = -5;
+        }
+    }
+
+    // Rotate the Task 2 Cubes
+    cubeFlat.rotation.y += 0.01;
+    cubeDetailed.rotation.y += 0.01;
 
     shapes.forEach((shape, index) => {
         shape.rotation.y += 0.01 + index * 0.002; // Varying rotation speeds
@@ -225,10 +291,11 @@ function animate() {
         }
     });
     
+    // Rotate the hero object
     heroMesh.rotation.y += 0.02;
     heroMesh.rotation.x += 0.01;
 
-    controls.update(); // Update controls for damping
+    controls.update();
     renderer.render(scene, camera);
 }
 
