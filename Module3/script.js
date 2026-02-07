@@ -105,7 +105,7 @@ const mat_standard = new THREE.MeshStandardMaterial({
 const mat_shader = new THREE.ShaderMaterial({
     uniforms: { time: { value: 0 } },
     transparent: true,
-    blending: THREE.AdditiveBlending, // This makes it look like it's glowing!
+    blending: THREE.AdditiveBlending, // This makes it look like it's glowing
     depthWrite: false, // Prevents the hologram from "cutting" other objects
     side: THREE.DoubleSide,
     vertexShader: `
@@ -137,6 +137,22 @@ const mat_shader = new THREE.ShaderMaterial({
         }`
 });
 
+const mat_glass = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    roughness: 0.1,
+    transmission: 1.0,
+    metalness: 0.0,
+    thickness: 0.5, // Glass thickness
+    transparent: true,
+    opacity: 1.0
+});
+
+const mat_glow = new THREE.MeshStandardMaterial({
+    color: 0x000000, // base color is black
+    emissive: 0xFFFF00, // emissive color is yellow/green
+    emissiveIntensity: 0.5 // Intensity of the glow
+})
+
 const sphere1 = new THREE.Mesh(sphere_geometry, mat_basic);
 
 const sphere2 = new THREE.Mesh(sphere_geometry, mat_normal);
@@ -160,14 +176,14 @@ const brickNormal = textureLoader.load('https://raw.githubusercontent.com/mrdoob
 
 // EXPERIMENT: Texture Repetition and Offset (Task 2 requirements)
 brickColor.wrapS = THREE.RepeatWrapping; // Allows horizontal tiling
-brickColor.repeat.set(1, 1);             // Tiles the image 2x2 across the surface
-brickNormal.wrapS = brickNormal.WrapT = THREE.RepeatWrapping;
+brickColor.repeat.set(1, 1);             
+brickNormal.wrapS = brickNormal.wrapT = THREE.RepeatWrapping;
 brickNormal.repeat.set(1, 1);
 
 // Cube 1: No Normal Map
 const mat_flat = new THREE.MeshPhongMaterial({ map: brickColor });
 const cubeFlat = new THREE.Mesh(cube_geometry, mat_flat);
-cubeFlat.position.set(-4, 2, 10); // To the left
+cubeFlat.position.set(-4, 2, 20); // To the left
 scene.add(cubeFlat);
 
 // Cube 2: With Normal Map
@@ -179,15 +195,15 @@ const mat_advanced = new THREE.MeshPhongMaterial({
 });
 
 const cubeDetailed = new THREE.Mesh(cube_geometry, mat_advanced);
-cubeDetailed.position.set(4, 2, 10); // To the right
+cubeDetailed.position.set(4, 2, 20); // To the right
 scene.add(cubeDetailed);
 
-// Add a label/pedestal for them
+// Add a pedestal for cubes
 const comparisonPedestal = new THREE.Mesh(
     new THREE.BoxGeometry(12, 0.2, 2),
     new THREE.MeshStandardMaterial({ color: 0x333333 })
 );
-comparisonPedestal.position.set(0, 0.1, 10);
+comparisonPedestal.position.set(0, 0.1, 20);
 scene.add(comparisonPedestal);
 
 /**
@@ -197,15 +213,15 @@ scene.add(comparisonPedestal);
 const pedestalGeometry = new THREE.CylinderGeometry(1.5, 1.5, 0.5, 32);
 const pedestalMaterial = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.7 });
 const pedestalMesh = new THREE.Mesh(pedestalGeometry, pedestalMaterial);
-pedestalMesh.position.set(0, 0.25, -5);
+pedestalMesh.position.set(-20, 0.25, -5);
 scene.add(pedestalMesh);
 
 const heroGeometry = new THREE.IcosahedronGeometry(2, 0);
 const heroMesh =  new THREE.Mesh(heroGeometry, mat_standard);
-heroMesh.position.set(0, 5, -5);
+heroMesh.position.set(-20, 5, -5);
 scene.add(heroMesh);
 
-const materialPalette = [mat_basic, mat_shader, mat_normal, mat_lambert, mat_phong, mat_standard, mat_advanced];
+const materialPalette = [mat_basic, mat_shader, mat_normal, mat_lambert, mat_phong, mat_standard, mat_advanced, mat_glass, mat_glow];
 let paletteIndex = 0;
 let isOrbiting = false;
 window.addEventListener('keydown', (event) => {
@@ -254,16 +270,16 @@ const clock = new THREE.Clock();
 function animate() {
     requestAnimationFrame(animate);
     const elapsed = clock.getElapsedTime();
-    mat_shader.uniforms.time.value = elapsed;
+    mat_shader.uniforms.time.value = elapsed; // Pass the elapsed time to the shader
 
     // --- HOLOGRAM GLITCH EFFECT ---
     if (heroMesh.material === mat_shader) {
         // Randomly offset the position very slightly to simulate a digital glitch
         if (Math.random() > 0.98) {
-            heroMesh.position.x = (Math.random() - 0.5) * 0.5;
+            heroMesh.position.x = -20 + (Math.random() - 0.5) * 0.5;
             heroMesh.position.z = -5 + (Math.random() - 0.5) * 0.5;
         } else {
-            heroMesh.position.x = 0;
+            heroMesh.position.x = -20;
             heroMesh.position.z = -5;
         }
     }
@@ -275,7 +291,7 @@ function animate() {
     shapes.forEach((shape, index) => {
         shape.rotation.y += 0.01 + index * 0.002; // Varying rotation speeds
 
-        if (isOrbiting) {
+        if (isOrbiting) { // Orbiting mode
             const radius = 6;
             const speed = elapsed * 0.5 *  (1 + index * 0.1); // Vary speed based on index
             const angle = speed + (index * (Math.PI / 2) / shapes.length); // Calculate angle based on index
