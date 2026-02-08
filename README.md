@@ -24,7 +24,7 @@ This project is part of a monorepo. To run it locally:
 
 [Module 3: Material and Texture Manipulation](#module3)
 
-[Module 4: Pushing GPU Boundaries with Three.js: A Torus Geometry Stress Test](#module4)
+[Module 4: A Torus Geometry Stress Test and Exploring Mesh Geometries](#module4)
 
 # Module 1 <a name="module1"></a>
 Folder: ./Module1 Basic intorduction to Three.js scenes, cameras, renders.
@@ -36,7 +36,7 @@ Subfolders:
 1) ./Module2/Lighting_Scene
 2) ./Module2/Walking_Controls
 
-The following information will proide instructions on how to run .Module2/Walking_Controls
+The following information will provide instructions on how to run .Module2/Walking_Controls
 ## How to Run:
 1. Ensure you have `npm install` in the root.
 2. Execute the command
@@ -100,7 +100,7 @@ A high-fidelity, first person 3D gallery experience built with Three.js. This pr
 
 # Module 3 <a name="module3"></a>
 Folder: ./Module3
-The following information will proide instructions on how to run ./Module3
+The following information will provide instructions on how to run ./Module3
 
 ## How to Run:
 1. Ensure you have `npm install` in the root.
@@ -123,18 +123,18 @@ This project features shapes with various materials/textures to explore how ligh
 
 # Module 4 <a name="module4"></a>
 Folder: ./Module4
-The following information will proide instructions on how to run ./Module4
+The following information will provide instructions on how to run ./Module4/m4torus
 
 ## How to Run:
 1. Ensure you have `npm install` in the root.
 2. Execute the command
 ```
-  npm run dev -w module4
+  npm run dev -w m4torus
 ```
 3. Open the local server in your browser.
 
 ## Description
-This project features shapes with various materials/textures to explore how lighting materials and lighting affect appearance.
+This project stress tests the GPU by exploring how multiple objects affect the GPU along with lighting and materials.
 
 ### Controls
   | Key | Action |
@@ -145,5 +145,28 @@ This project features shapes with various materials/textures to explore how ligh
   | 'M' | Alternate between the materials |
   | 'C' | Alternate between the cameras (Perspective vs Orthographic) |
   | 'L' | Alternate between the lighting |
+
+
+Folder: ./Module4
+The following information will provide instructions on how to run ./Module4/m4mesh
+
+## How to Run:
+1. Ensure you have `npm install` in the root.
+2. Execute the command
+```
+  npm run dev -w m4mesh
+```
+3. Open the local server in your browser.
+
+## Description
+This project explores user interaction, displaying information, manipulating meshes.
+
+### Controls
+  | Key | Action |
+  | :--- | :--- |
+  | 'Space' | Turn on/off grid and axes helpers |
+  | 'K' | Increase cylinder height |
+  | 'J' | Decrease cylinder height |
+  | 'Click on a shape' | Alternate between the materials on each shape |
 
   [Back to Top](#top-of-page)
