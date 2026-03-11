@@ -4,19 +4,35 @@ body {
     background-color: #050505;
 }
 
-#bg { 
-    display: block; 
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
 }
 
-button {
-    padding: 8px 12px;
-    cursor: pointer;
-    background: #333;
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: white;
-    border: 1px solid #555;
-    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    pointer-events: none; /* Allows clicks to pass through to the game */
+    opacity: 0.5;
 }
 
-button:hover {
-    background: #444;
+#instructions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    font-family: 'Georgia', serif;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
 }
