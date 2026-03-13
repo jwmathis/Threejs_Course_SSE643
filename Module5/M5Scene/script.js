@@ -216,6 +216,39 @@ fpControls.addEventListener('unlock', () => {
     console.log('Controls Unlocked');
 });
 
+// --- 6. THE ETERNAL FIRE ---
+const fireGroup = new THREE.Group();
+fireGroup.position.set(0, 0, 3);
+scene.add(fireGroup);
+
+// 1. The light (Flickering glow)
+const fireLight = new THREE.PointLight(0xFF4400, 15, 10);
+fireLight.position.y = 1;
+fireGroup.add(fireLight);
+
+// 2. The particles (Embers)
+const emberCount = 200;
+const emberGeo = new THREE.BufferGeometry();
+const emberPos = new Float32Array(emberCount * 3);
+const emberLifes = new Float32Array(emberCount);
+
+for  (let i = 0; i < emberCount; i++) {
+    emberPos[i * 3] = (Math.random() * 0.5) * 0.5; // X
+    emberPos[i * 3 + 1] = Math.random() * 2; // Y
+    emberPos[i * 3 + 2] = (Math.random() * 0.5) * 0.5; // Z
+    emberLifes[i] = Math.random(); // Random start life
+}
+emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPos, 3));
+
+const emberMat = new THREE.PointsMaterial({
+    color: 0xFF6600,
+    size: 0.15,
+    transparent: true,
+    blending: THREE.AdditiveBlending
+});
+const embers = new THREE.Points(emberGeo, emberMat);
+fireGroup.add(embers);
+
 // --- ANIMATION ---
 let lightningTimer = 0;
 
@@ -223,6 +256,28 @@ function animate() {
 
     requestAnimationFrame(animate);
     const t = timer.getElapsedTime();
+
+    // --- ANIMATE FIRE ---
+    // 1. Flickering Light
+    fireLight.intensity = 10 + Math.random() * 8;
+
+    // 2. Animate Embers
+    const emberAr = embers.geometry.attributes.position.array;
+    for (let i = 0; i < emberCount; i++) {
+        // Move up
+        emberAr[i * 3 + 1] += 0.02 + Math.random() * 0.02;
+        
+        // Add a little wobble
+        emberAr[i * 3] += Math.sin(t + i) * 0.01;
+
+        // Reset ember if it goes too high
+        if (emberAr[i * 3 + 1] > 3) {
+            emberAr[i * 3 + 1] = 0;
+            emberAr[i * 3] = (Math.random() - 0.5) * 0.5;
+            emberAr[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+        }
+    }
+    embers.geometry.attributes.position.needsUpdate = true;
 
     if (grassMaterial.userData.shader) grassMaterial.userData.shader.uniforms.uTime.value = t;
 
