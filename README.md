@@ -25,6 +25,10 @@ This project is part of a monorepo. To run it locally:
 [Module 3: Material and Texture Manipulation](#module3)
 
 [Module 4: A Torus Geometry Stress Test and Exploring Mesh Geometries](#module4)
+ 
+[Module 5: Advanced Sprite System Development with Three.js](#module5sprite)
+
+[Module 5: Three.js Artistic Showcase](#module5scene)
 
 # Module 1 <a name="module1"></a>
 Folder: ./Module1 Basic intorduction to Three.js scenes, cameras, renders.
@@ -169,4 +173,72 @@ This project explores user interaction, displaying information, manipulating mes
   | 'J' | Decrease cylinder height |
   | 'Click on a shape' | Alternate between the materials on each shape |
 
-  [Back to Top](#top-of-page)
+# Module 5: Advanced Sprite System Development with Three.js <a name="module5sprite"></a>
+
+## Project Overview
+This project demonstrates a high-performance 3D environment built with Three.js, focusing on the efficient management of a large number of interactive objects. Instead of traditional `THREE.Sprite` objects, this implementation uses `InstancedMesh` with a custom billboarding logic. This approach significantly reduces draw calls, allowing the GPU to render hundreds of independent entities in a single pass while maintinaing individual interactivity, movement, and color states. 
+
+## How to Run the Project
+Becasue this project is housed within a monorepository, you must target the specific workspace using npm.
+1. Navigate to the root of the monorepo.
+2. Install dependencies (if not already done):
+```
+npm install
+```
+3. Run the m5sprite workspace:
+```
+npm run dev -w "m5sprite"
+```
+4. Open your broswer to the local address provided (typically http://localhost:5173).
+
+## Implemented Features
+* High-Performance Instancing: Renders 100+ entities using a single `THREE.InstancedMesh` to optimize GPU overhead.
+* Custom Billboarding Logic: Manually syncs instance quaternions to the `camera.quaternion` to mimic sprite behavior using `PlaneGeometry`.
+* Raycasting & Selection: Custom logic to identify specific `instanceId` values from a single mesh, allowing users to "select" individual instances with a mouse click.
+* Interactive Controls: 
+  * Selection: Click an object to highlight it in white.
+  * WASD Movement: Once slected, use the W, A, S, and D keys to move the specific instance through 3D space.
+  * Depth Toggle: A UI button to toggle depthTest, demonstrating how transparency and sorting affect the visual overlap of objects.
+* Dynamic Animation: Non-selected objects follow a procedural sine/cosine orbital path.
+* Performance Monitoring: Integrated `Stats.js` to track frame rates and MS latency in real-time.
+
+## Challenges and Solutions
+1. Identifying Single Instances
+**Challenge**: Typically, a Raycaster returns the entire Mesh object. Since 1000 objects are part of one `InstancedMesh`, clicking one would usually select all of them.
+**Solution**: Using the `instanceId` property returned by the Raycaster. This allowed for a lookup in a local `spriteData` array to modify only the specific matrix and color for that unique ID.
+
+2. Manual Billboarding vs, Sprite Class
+**Challenge**: THREE.Sprite objects are easy to use but do not support `InstancedMesh` easily. Using `PlaneGeometry` meant the objects would look flat when viewed from the side.
+**Solution**: In the animation loop, I force each instance's quaternion to copy the camera's quaternion:
+`dummy.quaternion,cop(Camera.quaternion);`
+This ensures the sprites always face the user, regardless of camera movement.
+
+3. State Management in Instancing
+**Challenge**: `InstancedMesh` does not store positionsl it only stores a large Matrix4 array.
+**Solution**: Created a `spriteData` array to act as a dictionary for positions, scales, and colors. Te animation loop reads from this array, updates a `dummy` object, and then pushes those changes back to the `instanceMatrix`.
+
+
+# Module 5: Three.js Artistic Showcase <a name="module5scene"></a>
+
+## Project Overview
+The concept for this was to create an atmospheric, living world inspired by the environmental storytelling of games like The Legend of Zelda: Breath of the Wild. My goal was to move beyond static 3D models and instead focus on dynamic systems, like implementing wind, rain, and movement, to evoke a specific emotional response. My goals were:
+
+* Using low-poly stylized aesthetics combined with high-end post-processing to create a “painterly” look.
+* Contrast the tiny, organic movement of the grass with the rigid, towering presence of the central monolith.
+* Moving from a viewer to a participant by implementing first-person controls, allowing the user to navigate the stormy field at their own pace.
+
+
+## How to Run the Project
+Becasue this project is housed within a monorepository, you must target the specific workspace using npm.
+1. Navigate to the root of the monorepo.
+2. Install dependencies (if not already done):
+```
+npm install
+```
+3. Run the m5scene workspace:
+```
+npm run dev -w "m5scene"
+```
+4. Open your broswer to the local address provided (typically http://localhost:5173).
+
+[Back to Top](#top-of-page)

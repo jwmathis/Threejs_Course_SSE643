@@ -218,11 +218,11 @@ fpControls.addEventListener('unlock', () => {
 
 // --- 6. THE ETERNAL FIRE ---
 const fireGroup = new THREE.Group();
-fireGroup.position.set(0, 0, 3);
+fireGroup.position.set(0, 10, 0);
 scene.add(fireGroup);
 
 // 1. The light (Flickering glow)
-const fireLight = new THREE.PointLight(0xFF4400, 15, 10);
+const fireLight = new THREE.PointLight(0xFF4400, 20, 25);
 fireLight.position.y = 1;
 fireGroup.add(fireLight);
 
@@ -248,6 +248,49 @@ const emberMat = new THREE.PointsMaterial({
 });
 const embers = new THREE.Points(emberGeo, emberMat);
 fireGroup.add(embers);
+
+// --- 7. THE SMOKE SYSTEM ---
+const smokeParticles = [];
+const smokeCount = 40;
+const smokeGroup = new THREE.Group();
+scene.add(smokeGroup);
+
+// Create a soft, fuzzy texture for the smoke puffs
+const createSmokeTexture = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const context = canvas.getContext('2d');
+    const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(canvas);
+};
+
+const smokeTexture = createSmokeTexture();
+
+for (let i = 0; i < smokeCount; i++) {
+    const smokeMat = new THREE.SpriteMaterial({
+        map: smokeTexture,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false, // Prevents smoke from cutting "holes" in the rain/fog
+    });
+    
+    const puff = new THREE.Sprite(smokeMat);
+    puff.userData = {
+        velocity: new THREE.Vector3((Math.random() - 0.5) * 0.02, 0.04 + Math.random() * 0.03, (Math.random() - 0.5) * 0.02),
+        life: Math.random(),
+        spin: (Math.random() - 0.5) * 0.05
+    };
+    
+    // Sync with fire position
+    puff.position.set(fireGroup.position.x, 0.5, fireGroup.position.z); 
+    smokeGroup.add(puff);
+    smokeParticles.push(puff);
+}
 
 // --- ANIMATION ---
 let lightningTimer = 0;
@@ -278,6 +321,34 @@ function animate() {
         }
     }
     embers.geometry.attributes.position.needsUpdate = true;
+
+    // --- ANIMATE SMOKE ---
+    smokeParticles.forEach((puff) => {
+        const data = puff.userData;
+        data.life += 0.005; // Adjust speed of smoke rising
+
+        // Physical movement
+        puff.position.add(data.velocity);
+        puff.material.rotation += data.spin;
+
+        // Fade in when born, fade out when old
+        if (data.life < 0.2) {
+            puff.material.opacity = data.life * 5; 
+        } else {
+            puff.material.opacity = 1 - data.life;
+        }
+
+        // Make smoke expand as it rises
+        const scale = 1 + data.life * 3;
+        puff.scale.set(scale, scale, 1);
+
+        // Reset the puff once it reaches the end of its life
+        if (data.life >= 1) {
+            data.life = 0;
+            puff.position.set(0, 10.5, 0);
+            puff.scale.set(1, 1, 1);
+        }
+    });
 
     if (grassMaterial.userData.shader) grassMaterial.userData.shader.uniforms.uTime.value = t;
 
